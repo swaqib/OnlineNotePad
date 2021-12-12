@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { AlertController, ModalController } from '@ionic/angular';
+import { ModalPage } from '../modal/modal.page';
+import { DataService } from '../services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +10,53 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  notes=[];
+
+  constructor( private dataService: DataService, private alertCtrl: AlertController, private modalCtrl: ModalController ) {
+    this.dataService.getNotes().subscribe(res => {
+      console.log(res);
+      this.notes = res;
+    });
+  }
+
+  async openNote(note) {
+    const modal = await this.modalCtrl.create({
+      component: ModalPage,
+      componentProps: { id: note.id },
+      swipeToClose: true,
+    });
+    return await modal.present();
+  }
+
+  async addNote() {
+    const alert = await this.alertCtrl.create({
+      header: 'Add Note',
+      inputs: [
+        {
+          name: 'title',
+          placeholder: 'Add Title Here',
+          type: 'text'
+        },
+        {
+          name: 'text',
+          placeholder: 'Add Note Here',
+          type: 'textarea'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Add',
+          handler: (res) => {
+            this.dataService.addNote({title: res.title, text: res.text});
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 
 }

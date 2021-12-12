@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "online-notepad-private": {
+      "hosting": {
+        "app": [
+          "online-notepad-private"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "online-notepad-private"
+  }
+}
